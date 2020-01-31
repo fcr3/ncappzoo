@@ -32,7 +32,8 @@ GET_TEST_IMG1 = wget -c --no-cache -P ./test_images https://raw.githubuserconten
 GET_TEST_IMG2 = wget -c --no-cache -P ./test_images https://raw.githubusercontent.com/fcr3/chef_devmesh/master/test_images/test2.JPG
 GET_TEST_IMG3 = wget -c --no-cache -P ./test_images https://raw.githubusercontent.com/fcr3/chef_devmesh/master/test_images/test3.JPG
 GET_TEST_LICENSE = wget -c --no-cache -P ./test_images https://raw.githubusercontent.com/fcr3/chef_devmesh/master/test_images/license.txt
-GET_MODEL_PB = python3 download_weights.py
+GET_MODEL_PB = wget http://dp2f0iayzbweh.cloudfront.net/ncappzoo/food_detection/model/frozen_inference_graph.pb -O ./tensorflow_model/frozen_inference_graph.pb
+# if above doesn't work: python3 download_weights.py
 
 RUN_PY_RELATIVE_DIR = ssd_inception_v2_food.py
 TEST_IMG_DIR = test_images
@@ -311,7 +312,7 @@ train_model:
 	@echo $(YELLOW)"URGENT: READ THE FOLLOWING INSTRUCTIONS BEFORE TRAINING:" ;
 	@echo "In order to have more verbose logging so you can verify that your model is" ;
 	@echo "actually training, adding the following to line 57 of model_main.py in" ;
-	@echo "models/research/object_detection: tf.logging.set_verbosity(tf.logging.INFO)." 
+	@echo "models/research/object_detection: tf.logging.set_verbosity(tf.logging.INFO)."
 	@echo "A reference file will be made with the original file content: old_model_main.py" $(NOCOLOR);
 	@echo ""
 	@echo "NOTE: Training files are unfrozen. If would like to export a model,";
@@ -324,7 +325,7 @@ train_model:
 	@echo "replacing the number on line 136 to any positive integer (ex. 1) after 'batch_size:'."
 	@echo ""
 	@read -p"Press ENTER to continue the steps above (this might take a long time) or Ctrl-C to cancel" variable_nps; echo;
-	
+
 	@if [ -e ${TF_MODEL_DIRNAME}/research/object_detection/old_model_main.py ] ;\
 	then \
 		echo "Changing model_main.py" ;\
@@ -502,7 +503,7 @@ download_train_files:
 	@echo ""
 
 .PHONY: uninstall-reqs
-uninstall-reqs: 
+uninstall-reqs:
 	@echo $(YELLOW)"\nSSD Inception V2 Food: Uninstalling requirements..."$(NOCOLOR)
 	@echo "Nothing to uninstall."
 
